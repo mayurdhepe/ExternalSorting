@@ -21,7 +21,7 @@ public class ExternalSort {
 
         if (args.length == 0) {
             System.out.println(
-                "Please specify the record file name as argument!");
+                "Please specify the record file name as argument.");
             return;
         }
 
