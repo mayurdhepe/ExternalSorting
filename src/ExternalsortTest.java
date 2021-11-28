@@ -1,4 +1,3 @@
-package ExternalSorting;
 
 import student.TestCase;
 
@@ -12,13 +11,13 @@ import student.TestCase;
  */
 public class ExternalsortTest extends TestCase {
 
-    ExternalSort extSort;
+    private Externalsort extSort;
 
     /**
      * setUp method
      */
     public void setUp() {
-        extSort = new ExternalSort();
+        extSort = new Externalsort();
         System.out.print("");
     }
 
@@ -30,25 +29,24 @@ public class ExternalsortTest extends TestCase {
 
         try {
             GenFile.sorted(new String[] { "./Data/sampleInput200.bin", "200" });
-            // GenFile.reversed(new String[] {"./Data/sampleInput30.bin",
-            // "30"});
-            // GenFile.sorted(new String[] {"./Data/sampleInput200.bin",
-            // "200"});
+            GenFile.reversed(new String[] { "./Data/sampleInput30.bin", "30" });
+            GenFile.sorted(new String[] { "./Data/sampleInput400.bin", "400" });
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            // TODO: handle exception
         }
 
         extSort.main(new String[] { "./Data/sampleInput200.bin" });
         assertTrue(equalsRegex(systemOut().getHistory(), "[\\s\\S]*"));
         systemOut().clearHistory();
 
-        /*
-         * extSort.main(new String[] { "./Data/sampleInput30.bin" });
-         * assertTrue(equalsRegex(systemOut().getHistory(), "[\\s\\S]*"));
-         * systemOut().clearHistory();
-         */
+        extSort.main(new String[] { "./Data/sampleInput30.bin" });
+        assertTrue(equalsRegex(systemOut().getHistory(), "[\\s\\S]*"));
+        systemOut().clearHistory();
+
+        extSort.main(new String[] { "./Data/sampleInput400.bin" });
+        assertTrue(equalsRegex(systemOut().getHistory(), "[\\s\\S]*"));
+        systemOut().clearHistory();
 
         /*
          * extSort.main(new String[] {"./Data/P1test3.txt"});

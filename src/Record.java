@@ -1,4 +1,3 @@
-package ExternalSorting;
 
 import java.nio.ByteBuffer;
 
@@ -10,15 +9,15 @@ import java.nio.ByteBuffer;
  */
 public class Record implements Comparable<Record> {
 
-    private byte[] record;
+    private byte[] recrd;
 
     /**
      * Get id from the record
      * 
-     * @return
+     * @return ID
      */
     public long getID() {
-        ByteBuffer b = ByteBuffer.wrap(record);
+        ByteBuffer b = ByteBuffer.wrap(recrd);
         return b.getLong();
     }
 
@@ -29,7 +28,7 @@ public class Record implements Comparable<Record> {
      * @return key
      */
     public double getKey() {
-        ByteBuffer b = ByteBuffer.wrap(record);
+        ByteBuffer b = ByteBuffer.wrap(recrd);
         return b.getDouble(8);
     }
 
@@ -37,11 +36,11 @@ public class Record implements Comparable<Record> {
     /**
      * Constructor
      * 
-     * @param recd
+     * @param rec
      *            record
      */
-    public Record(byte[] recd) {
-        this.record = recd;
+    public Record(byte[] rec) {
+        this.recrd = rec;
     }
 
 
@@ -51,7 +50,7 @@ public class Record implements Comparable<Record> {
      * @return record
      */
     public byte[] getRecord() {
-        return record;
+        return recrd;
     }
 
 
@@ -59,13 +58,15 @@ public class Record implements Comparable<Record> {
      * To compare two records based on key
      */
     @Override
-    public int compareTo(Record cmpRecd) {
-        return Double.compare(this.getKey(), cmpRecd.getKey());
+    public int compareTo(Record rec) {
+        return Double.compare(this.getKey(), rec.getKey());
     }
 
 
     /**
      * Convert record id and key to string
+     * 
+     * @return string converted record ID and key
      */
     public String toString() {
         return this.getID() + " " + this.getKey();

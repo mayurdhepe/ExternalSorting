@@ -1,4 +1,3 @@
-package ExternalSorting;
 
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -9,7 +8,7 @@ import java.nio.file.Files;
  * @version Nov 25 2021
  *          Main class for external sorting
  */
-public class ExternalSort {
+public class Externalsort {
 
     /**
      * Main function
@@ -28,7 +27,7 @@ public class ExternalSort {
         Sort sort = new Sort(args[0]);
 
         sort.replacementSelection();
-        sort.nWayMerge();
+        sort.multiWayMerge();
 
         String output = "./Data/outputFile";
 

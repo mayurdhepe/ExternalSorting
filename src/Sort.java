@@ -1,4 +1,3 @@
-package ExternalSorting;
 
 /**
  ** @author Mayur Dhepe
@@ -190,7 +189,7 @@ public class Sort {
                 System.arraycopy(this.ramSize, this.ramSize.length
                     - nextElements, this.ramSize, 0, nextElements);
                 minHeap.setSize(nextElements);
-                minHeap.createHeap();
+                minHeap.buildHeap();
                 nextElements = 0;
                 lengthOfRun = 0;
             }
@@ -224,23 +223,24 @@ public class Sort {
 
         for (int i = 0; i < numberOfRuns; i++) {
 
-            if (runHelper[i].numberOfBlocks > 1) {
+            if (runHelper[i].getNumberOfBlocks() > 1) {
                 blockLength = this.recordsPerBlock;
             }
             else {
-                blockLength = runHelper[i].length;
+                blockLength = runHelper[i].getLength();
             }
 
-            readCount = getBlockFromFile(fileHandler, runHelper[i].start,
+            readCount = getBlockFromFile(fileHandler, runHelper[i].getStart(),
                 blockLength);
 
             System.arraycopy(this.input, 0, this.ramSize, i
                 * this.recordsPerBlock, readCount);
 
-            recordLength += runHelper[i].length;
-            runHelper[i].start = fileHandler.getFileOffset();
-            runHelper[i].length -= readCount;
-            runHelper[i].numberOfBlocks -= 1;
+            recordLength += runHelper[i].getLength();
+            runHelper[i].setStart(fileHandler.getFileOffset());
+            runHelper[i].setLength(runHelper[i].getLength() - readCount);
+            runHelper[i].setNumberOfBlocks(runHelper[i].getNumberOfBlocks()
+                - 1);
             recordCount[i] = readCount;
             blockPointer[i] = 0;
             runRecords[i] = this.ramSize[i * this.recordsPerBlock];
@@ -263,30 +263,33 @@ public class Sort {
             outputPointer++;
             blockPointer[minIndex] = blockPointer[minIndex] + 1;
             for (int i = 0; i < numberOfRuns; i++) {
-                if ((blockPointer[i] == recordCount[i])
-                    && (runHelper[i].numberOfBlocks > 0)) {
+                if ((blockPointer[i] == recordCount[i]) && (runHelper[i]
+                    .getNumberOfBlocks() > 0)) {
 
-                    if (runHelper[i].numberOfBlocks > 1) {
+                    if (runHelper[i].getNumberOfBlocks() > 1) {
                         blockLength = this.recordsPerBlock;
                     }
                     else {
-                        blockLength = runHelper[i].length;
+                        blockLength = runHelper[i].getLength();
                     }
 
-                    readCount = getBlockFromFile(fileHandler,
-                        runHelper[i].start, blockLength);
+                    readCount = getBlockFromFile(fileHandler, runHelper[i]
+                        .getStart(), blockLength);
 
                     System.arraycopy(this.input, 0, this.ramSize, i
                         * this.recordsPerBlock, readCount);
 
-                    runHelper[i].length -= readCount;
+                    runHelper[i].setLength(runHelper[i].getLength()
+                        - readCount);
                     recordCount[i] = readCount;
-                    runHelper[i].numberOfBlocks -= 1;
-                    runHelper[i].start = fileHandler.getFileOffset();
+                    runHelper[i].setNumberOfBlocks(runHelper[i]
+                        .getNumberOfBlocks() - 1);
+                    runHelper[i].setStart(fileHandler.getFileOffset());
+
                     blockPointer[i] = 0;
                 }
-                else if ((blockPointer[i] == recordCount[i])
-                    && (runHelper[i].numberOfBlocks == 0)) {
+                else if ((blockPointer[i] == recordCount[i]) && (runHelper[i]
+                    .getNumberOfBlocks() == 0)) {
                     runRecords[i] = null;
                 }
             }
@@ -309,23 +312,23 @@ public class Sort {
 
 
     /**
-     * Logic to perform n-way merge on run manager list
+     * Logic to perform multiway merge on run manager list
      */
-    public void nWayMerge() {
+    public void multiWayMerge() {
 
         RunHelper[] runHelpers = new RunHelper[this.minHeapSize];
 
         while (this.runManager.getLength() != 1) {
             int i = 0;
             while ((!this.runManager.isEmpty()) && (i != this.minHeapSize)) {
-                runHelpers[i] = this.runManager.getAndDelete();
+                runHelpers[i] = this.runManager.delete();
                 i++;
             }
             // call merge
             merge(runHelpers, i);
         }
 
-        RunHelper finalRec = this.runManager.getAndDelete();
+        RunHelper finalRec = this.runManager.delete();
 
         String outputFileName = "./Data/outputFile";
         FileHandler.removeFile(outputFileName);
@@ -336,8 +339,8 @@ public class Sort {
         FileHandler outputFile = new FileHandler(outputFileName,
             this.recordSize, this.recordsPerBlock);
 
-        outputFile.writeToOutputFile(this.runFile, finalRec.start,
-            finalRec.length * this.recordSize);
+        outputFile.writeToOutputFile(this.runFile, finalRec.getStart(), finalRec
+            .getLength() * this.recordSize);
 
         outputFile.closeFile();
         this.runFile.closeFile();

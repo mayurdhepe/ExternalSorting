@@ -1,4 +1,3 @@
-package ExternalSorting;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -13,15 +12,16 @@ import java.nio.file.Files;
 public class FileHandler {
 
     private RandomAccessFile file;
-    private long fileLength = 0;
-    private long fileOffset = 0;
-
-    private int recordLength = 0;
-    private long totalRecords = 0;
 
     private long block = 0;
     private long totalBlocks = 0;
     private int blockLength = 0;
+
+    private int recordLength = 0;
+    private long totalRecords = 0;
+
+    private long fileLength = 0;
+    private long fileOffset = 0;
 
     /**
      * Constructor
@@ -98,12 +98,12 @@ public class FileHandler {
     /**
      * Get next block from file
      * 
-     * @param block
+     * @param blocks
      *            to store data
      * @return returns the next block
      */
-    public boolean hasNextBlock(byte[][] block) {
-        if (block.length != this.blockLength
+    public boolean hasNextBlock(byte[][] blocks) {
+        if (blocks.length != this.blockLength
             || this.totalBlocks == this.block) {
             closeFile();
             return false;
@@ -111,7 +111,7 @@ public class FileHandler {
         try {
             for (int i = 0; i < this.blockLength; i++) {
                 this.file.seek(fileOffset);
-                this.file.read(block[i]);
+                this.file.read(blocks[i]);
                 this.fileOffset = this.file.getFilePointer();
             }
             this.block++;
@@ -136,7 +136,7 @@ public class FileHandler {
     /**
      * Get the block from current offset
      * 
-     * @param block
+     * @param blocks
      *            to store block of data
      * @param offset
      *            file offset
@@ -144,15 +144,17 @@ public class FileHandler {
      *            length of block
      * @return block from given position
      */
-    public int getCurrentOffset(byte[][] block, long offset, int length) {
+    public int getCurrentOffset(byte[][] blocks, long offset, int length) {
         this.fileOffset = offset;
         int count = 0;
         try {
             for (int i = 0; i < length; i++) {
-                if (this.recordLength * this.totalRecords < this.fileOffset)
+                if (this.recordLength * this.totalRecords < this.fileOffset) {
                     break;
+                }
+
                 this.file.seek(fileOffset);
-                this.file.read(block[i]);
+                this.file.read(blocks[i]);
                 this.fileOffset = this.file.getFilePointer();
                 count++;
             }

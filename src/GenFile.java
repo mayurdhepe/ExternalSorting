@@ -1,4 +1,3 @@
-package ExternalSorting;
 
 // WARNING: This program uses the Assertion class. When it is run,
 // assertions must be turned on. For example, under Linux, use:

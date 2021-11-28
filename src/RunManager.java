@@ -1,4 +1,3 @@
-package ExternalSorting;
 
 /**
  * @author Mayur Dhepe
@@ -10,7 +9,8 @@ package ExternalSorting;
  */
 public class RunManager<T> {
 
-    private Node<T> head, tail;
+    private Node<T> head;
+    private Node<T> tail;
 
     /**
      * Constructor
@@ -73,12 +73,13 @@ public class RunManager<T> {
 
 
     /**
-     * Get the record and deletes it from the list
+     * Deletes the next record from the list
      * 
      * @return record
      */
-    public T getAndDelete() {
-        Node<T> first = this.head.getNext(), tmpNode;
+    public T delete() {
+        Node<T> first = this.head.getNext();
+        Node<T> tmpNode;
 
         if (first != null) {
             tmpNode = first.getNext();
